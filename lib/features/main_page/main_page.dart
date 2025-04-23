@@ -1,0 +1,59 @@
+import 'package:flutter/material.dart';
+import 'package:warmreminders/features/main_page/main_page_api.dart';
+import 'package:warmreminders/features/main_page/widgets/add_reminder_button.dart';
+import 'package:warmreminders/features/main_page/widgets/edit_schedules_button.dart';
+import 'package:warmreminders/features/main_page/widgets/reminder_card.dart';
+import 'package:warmreminders/features/schedules_page/widgets/add_schedule_button.dart';
+import 'package:warmreminders/models/entities/reminder.dart';
+
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
+
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  List<Reminder> reminders = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    refreshReminders();
+    super.initState();
+  }
+
+  void refreshReminders() async {
+    setState(() {
+      isLoading=true;
+    });
+
+    reminders = await getReminders();
+    setState(() {
+      isLoading=false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+          title: Text("Warm Reminders"),
+          actions: [EditSchedulesButton()],
+      ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              itemCount: reminders.length,
+              itemBuilder: (context, index) {
+                final reminder = reminders[index];
+                return ReminderCard(resyncMainPage: refreshReminders, reminder: reminder);
+              },
+            ),
+      floatingActionButton: AddReminderButton(onAdd: refreshReminders),
+    );
+  }
+}
+
+
+
