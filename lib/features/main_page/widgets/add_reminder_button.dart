@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:warmreminders/features/main_page/main_page_api.dart';
 import 'package:warmreminders/features/main_page/models/requests/post_reminder_request.dart';
+import 'package:warmreminders/utils/storage_util.dart';
 
 class AddReminderButton extends StatefulWidget {
   final VoidCallback onAdd;
@@ -19,9 +21,10 @@ class _AddReminderButtonState extends State<AddReminderButton> {
   }
 
   void _showDialog() {
+    final String defaultCategory = usersCategories.firstOrNull ?? "Reminder";
     showDialog(
       context: context,
-      builder: (context) => _AddReminderDialog(onAdd: addReminder),
+      builder: (context) => _AddReminderDialog(onAdd: addReminder, defaultCategory: defaultCategory),
     );
   }
 
@@ -41,20 +44,23 @@ class _AddReminderButtonState extends State<AddReminderButton> {
 
 class _AddReminderDialog extends StatelessWidget {
   final Function(PostReminderRequest) onAdd;
-  final TextEditingController _controller = TextEditingController();
+  final String defaultCategory;
+  final TextEditingController _categoryController = TextEditingController();
+  final TextEditingController _reminderController = TextEditingController();
 
-  _AddReminderDialog({required this.onAdd});
+  _AddReminderDialog({required this.onAdd, required this.defaultCategory});
 
   @override
   Widget build(BuildContext context) {
+    _categoryController.text = defaultCategory;
+
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
       elevation: 10,
-      child: SizedBox(
+      child: IntrinsicHeight(child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
-        height: 300,
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -65,8 +71,34 @@ class _AddReminderDialog extends StatelessWidget {
                 'Add Warm Reminder',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
+              TypeAheadField<String>(
+                suggestionsCallback: (pattern) => usersCategories
+                    .where((item) => item.toLowerCase().contains(pattern.toLowerCase()))
+                    .toList(),
+                itemBuilder: (context, s) => ListTile(title: Text(s)),
+                onSelected: (s) => _categoryController.text = s,
+                controller: _categoryController,
+
+                builder: ( context, fieldController, focusNode) {
+                  return TextField(
+                    controller: fieldController,   // <-- use this, not your own
+                    focusNode: focusNode,
+                    decoration: InputDecoration(
+                      hintText: 'Category',
+                      border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              SizedBox(height: 8),
               TextField(
-                controller: _controller,
+                controller: _reminderController,
                 decoration: InputDecoration(
                   hintText: 'What would you like to be warmly reminded of?',
                   border: const OutlineInputBorder(),
@@ -77,7 +109,8 @@ class _AddReminderDialog extends StatelessWidget {
                     ),
                   ),
                 ),
-                maxLines: 3,
+                minLines: 3,
+                maxLines: 10,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -89,9 +122,13 @@ class _AddReminderDialog extends StatelessWidget {
                   const SizedBox(width: 10),
                   ElevatedButton(
                     onPressed: () {
-                      final text = _controller.text.trim();
+                      final text = _reminderController.text.trim();
+                      final category = _categoryController.text.trim();
                       if (text.isNotEmpty) {
-                        onAdd(PostReminderRequest(reminderText: text, category: 'Reminder'));
+                        onAdd(PostReminderRequest(
+                            reminderText: text,
+                            category: category.isNotEmpty ? category : 'Reminder'
+                        ));
                         Navigator.pop(context);
                       }
                     },
@@ -107,6 +144,6 @@ class _AddReminderDialog extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 }

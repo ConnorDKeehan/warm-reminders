@@ -8,6 +8,7 @@ import 'package:warmreminders/features/auth/auth_api.dart';
 import 'package:warmreminders/features/auth/register_page/register_page.dart';
 import 'package:warmreminders/features/main_page/main_page.dart';
 import 'package:warmreminders/utils/storage_util.dart';
+import 'package:flutter/foundation.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -69,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
           'email',
         ],
         serverClientId:
-            '685001516638-odmd19sl6898cc1a6gl7qudu2f4ich2a.apps.googleusercontent.com', //XXXXXXX
+            '685001516638-odmd19sl6898cc1a6gl7qudu2f4ich2a.apps.googleusercontent.com',
       );
 
       // Attempt to sign in silently first. If that fails, prompt user.
@@ -282,7 +283,7 @@ class _LoginPageState extends State<LoginPage> {
                           // SIGN IN WITH APPLE
                           // (Available on iOS 13+ and macOS 10.15+)
                           const SizedBox(height: 8),
-                          if (Platform.isIOS)
+                          if (!kIsWeb &&  defaultTargetPlatform == TargetPlatform.iOS)
                             SignInButton(Buttons.AppleDark,
                                 onPressed: _signInWithApple),
                         ],

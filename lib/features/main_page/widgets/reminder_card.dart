@@ -37,7 +37,8 @@ class ReminderCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  reminderDate,
+                  reminder.category?.isNotEmpty ?? false ? '$reminderDate - ${reminder.category}' :
+                    reminderDate,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const Spacer(),

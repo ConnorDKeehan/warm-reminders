@@ -5,6 +5,7 @@ import 'package:warmreminders/features/main_page/widgets/edit_schedules_button.d
 import 'package:warmreminders/features/main_page/widgets/reminder_card.dart';
 import 'package:warmreminders/features/schedules_page/widgets/add_schedule_button.dart';
 import 'package:warmreminders/models/entities/reminder.dart';
+import 'package:warmreminders/utils/storage_util.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -29,6 +30,11 @@ class _MainPageState extends State<MainPage> {
     });
 
     reminders = await getReminders();
+    setUsersCategories(reminders.map((e) =>
+      e.category?.isNotEmpty ?? false ?
+      '${e.category![0].toUpperCase()}${e.category!.substring(1).toLowerCase()}' :
+      null
+    ).whereType<String>());
     setState(() {
       isLoading=false;
     });

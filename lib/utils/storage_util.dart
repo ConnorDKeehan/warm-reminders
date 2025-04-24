@@ -29,6 +29,11 @@ Future<String?> getRefreshToken() async {
   return refreshToken;
 }
 
+void setUsersCategories(Iterable<String> categories){
+  usersCategories.addAll(categories);
+}
+
+Set<String> usersCategories = {};
 const configApiBaseUrl = 'https://connormdk.xyz';
 const configApiSuccessResponses = [200, 201, 204];
 

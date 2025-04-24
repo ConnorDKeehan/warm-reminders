@@ -5,6 +5,7 @@ import 'package:warmreminders/features/main_page/main_page.dart';
 import 'package:warmreminders/services/push_notification_service.dart';
 import 'package:warmreminders/utils/storage_util.dart';
 import 'apis/common_api.dart';
+import 'dart:io' show Platform;
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -45,20 +46,20 @@ void main() {
 }
 
 void _initializePushNotifications() async {
-  await Firebase.initializeApp();
-  // Initialize Push Notification Service
-  PushNotificationService notificationService = PushNotificationService();
-  await notificationService.initialize();
+  if (Platform.isAndroid || Platform.isIOS) {
+    await Firebase.initializeApp();
+    // Initialize Push Notification Service
+    PushNotificationService notificationService = PushNotificationService();
+    await notificationService.initialize();
+  }
 }
 
 Future<bool> _checkUserIsLoggedInAndRefreshTokens() async {
   try {
-    print("trying to get tokens");
     final newTokens = await refreshTokens();
     await setTokens(newTokens);
     return true;
   } catch (e) {
-    print("failed to refresh token: $e");
     return false;
   }
 }
