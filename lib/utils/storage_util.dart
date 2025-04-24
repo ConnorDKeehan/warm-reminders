@@ -33,7 +33,7 @@ void setUsersCategories(Iterable<String> categories){
   usersCategories.addAll(categories);
 }
 
-Set<String> usersCategories = {};
+Set<String> usersCategories = {"Reminder"};
 const configApiBaseUrl = 'https://connormdk.xyz';
 const configApiSuccessResponses = [200, 201, 204];
 
