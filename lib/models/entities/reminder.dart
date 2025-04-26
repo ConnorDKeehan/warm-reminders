@@ -6,6 +6,7 @@ class Reminder {
   final DateTime dateCreatedUtc;
   final DateTime? dateLastShownUtc;
   final int amountOfTimesShown;
+  final int importance;
 
   Reminder({
     required this.id,
@@ -15,6 +16,7 @@ class Reminder {
     required this.dateCreatedUtc,
     this.dateLastShownUtc,
     required this.amountOfTimesShown,
+    required this.importance
   });
 
   factory Reminder.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,7 @@ class Reminder {
           ? DateTime.parse(json['dateLastShownUtc'])
           : null,
       amountOfTimesShown: json['amountOfTimesShown'],
+      importance: json['importance']
     );
   }
 
@@ -40,6 +43,7 @@ class Reminder {
       'dateCreatedUtc': dateCreatedUtc.toIso8601String(),
       'dateLastShownUtc': dateLastShownUtc?.toIso8601String(),
       'amountOfTimesShown': amountOfTimesShown,
+      'importance': importance
     };
   }
 }

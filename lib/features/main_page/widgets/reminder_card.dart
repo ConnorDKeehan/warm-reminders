@@ -16,10 +16,11 @@ class ReminderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colourScheme = Theme.of(context).colorScheme;
-    final shadowDarkness =
-    colourScheme.brightness == Brightness.dark ? 0.9 : 0.3;
-    final reminderDate =
-    reminder.dateCreatedUtc.toLocal().toString().split(' ')[0];
+
+    final shadowDarkness = colourScheme.brightness == Brightness.dark ? 0.9 : 0.3;
+    final reminderDate = reminder.dateCreatedUtc.toLocal().toString().split(' ')[0];
+
+    var title = '$reminderDate - ${reminder.category} - ${'★' * reminder.importance}';
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -37,8 +38,7 @@ class ReminderCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  reminder.category?.isNotEmpty ?? false ? '$reminderDate - ${reminder.category}' :
-                    reminderDate,
+                  title,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const Spacer(),

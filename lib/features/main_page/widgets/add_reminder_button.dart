@@ -16,8 +16,8 @@ class AddReminderButton extends StatefulWidget {
 
 class _AddReminderButtonState extends State<AddReminderButton> {
 
-  void addReminder(PostReminderRequest request){
-    postReminder(request);
+  void addReminder(PostReminderRequest request) async {
+    await postReminder(request);
     widget.onAdd();
   }
 
@@ -118,7 +118,8 @@ class _AddReminderDialog extends StatelessWidget {
                       if (text.isNotEmpty) {
                         onAdd(PostReminderRequest(
                             reminderText: text,
-                            category: category.isNotEmpty ? category : 'Reminder'
+                            category: category.isNotEmpty ? category : 'Reminder',
+                            importance: selectedImportance
                         ));
                         Navigator.pop(context);
                       }
