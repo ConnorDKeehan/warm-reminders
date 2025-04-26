@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:warmreminders/features/main_page/main_page_api.dart';
-import 'package:warmreminders/features/main_page/models/requests/post_reminder_request.dart';
-import 'package:warmreminders/features/main_page/widgets/category_pill.dart';
-import 'package:warmreminders/features/main_page/widgets/importance_pill.dart';
+import 'package:warmreminders/features/reminders_page/models/requests/post_reminder_request.dart';
+import 'package:warmreminders/features/reminders_page/reminders_page_api.dart';
+import 'package:warmreminders/features/reminders_page/widgets/category_pill.dart';
+import 'package:warmreminders/features/reminders_page/widgets/importance_pill.dart';
 import 'package:warmreminders/utils/storage_util.dart';
 
 class AddReminderButton extends StatefulWidget {
@@ -22,7 +22,6 @@ class _AddReminderButtonState extends State<AddReminderButton> {
   }
 
   void _showDialog() {
-    final String defaultCategory = usersCategories.firstOrNull ?? "Reminder";
     showDialog(
       context: context,
       builder: (context) => _AddReminderDialog(onAdd: addReminder),
@@ -31,13 +30,14 @@ class _AddReminderButtonState extends State<AddReminderButton> {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      onPressed: _showDialog,
-      icon: const Icon(Icons.favorite),
-      label: const Text("Add Reminder"),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Theme.of(context).splashColor,
-        foregroundColor: Colors.white,
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary, // background color
+        borderRadius: BorderRadius.circular(12), // rounded rectangle
+      ),
+      child: IconButton(
+        icon: const Icon(Icons.add, color: Colors.white),
+        onPressed: _showDialog,
       ),
     );
   }

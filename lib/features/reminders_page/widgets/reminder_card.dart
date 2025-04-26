@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:warmreminders/features/main_page/widgets/delete_reminder_button.dart';
-import 'package:warmreminders/features/main_page/widgets/edit_reminder_button.dart';
+import 'package:warmreminders/features/reminders_page/widgets/delete_reminder_button.dart';
+import 'package:warmreminders/features/reminders_page/widgets/edit_reminder_button.dart';
 import 'package:warmreminders/models/entities/reminder.dart';
 
 class ReminderCard extends StatelessWidget {

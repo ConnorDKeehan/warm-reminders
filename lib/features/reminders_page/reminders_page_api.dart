@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:warmreminders/clients/auth_http_client.dart';
-import 'package:warmreminders/features/main_page/models/requests/patch_reminder_request.dart';
-import 'package:warmreminders/features/main_page/models/requests/post_reminder_request.dart';
+import 'package:warmreminders/features/reminders_page/models/requests/patch_reminder_request.dart';
+import 'package:warmreminders/features/reminders_page/models/requests/post_reminder_request.dart';
 import 'package:warmreminders/models/entities/reminder.dart';
 import 'package:warmreminders/utils/storage_util.dart';
 

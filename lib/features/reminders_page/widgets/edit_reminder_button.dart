@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:warmreminders/features/main_page/main_page_api.dart';
-import 'package:warmreminders/features/main_page/models/requests/patch_reminder_request.dart';
-import 'package:warmreminders/features/main_page/models/requests/post_reminder_request.dart';
+import 'package:warmreminders/features/reminders_page/models/requests/patch_reminder_request.dart';
+import 'package:warmreminders/features/reminders_page/reminders_page_api.dart';
 
 class EditReminderButton extends StatefulWidget {
   final VoidCallback onUpdate;

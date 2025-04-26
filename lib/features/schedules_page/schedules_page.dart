@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:warmreminders/features/main_page/main_page_api.dart';
-import 'package:warmreminders/features/main_page/widgets/add_reminder_button.dart';
-import 'package:warmreminders/features/main_page/widgets/edit_schedules_button.dart';
-import 'package:warmreminders/features/main_page/widgets/reminder_card.dart';
 import 'package:warmreminders/features/schedules_page/schedules_page_api.dart';
 import 'package:warmreminders/features/schedules_page/widgets/add_schedule_button.dart';
 import 'package:warmreminders/features/schedules_page/widgets/schedule_card.dart';
-import 'package:warmreminders/models/entities/reminder.dart';
 import 'package:warmreminders/models/entities/schedule.dart';
 
 class SchedulesPage extends StatefulWidget {

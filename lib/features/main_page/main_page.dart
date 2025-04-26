@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:warmreminders/features/main_page/main_page_api.dart';
-import 'package:warmreminders/features/main_page/widgets/add_reminder_button.dart';
-import 'package:warmreminders/features/main_page/widgets/edit_schedules_button.dart';
-import 'package:warmreminders/features/main_page/widgets/reminder_card.dart';
-import 'package:warmreminders/features/schedules_page/widgets/add_schedule_button.dart';
-import 'package:warmreminders/models/entities/reminder.dart';
-import 'package:warmreminders/utils/storage_util.dart';
+import 'package:warmreminders/features/reminders_page/reminders_page.dart';
+import 'package:warmreminders/features/schedules_page/schedules_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -15,51 +10,37 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  List<Reminder> reminders = [];
-  bool isLoading = true;
+  int _selectedIndex = 0;
 
-  @override
-  void initState() {
-    refreshReminders();
-    super.initState();
-  }
+  static const List<Widget> _pages = <Widget>[
+    RemindersPage(),
+    SchedulesPage()
+  ];
 
-  void refreshReminders() async {
+  void _onItemTapped(int index) {
     setState(() {
-      isLoading=true;
-    });
-
-    reminders = await getReminders();
-    setUsersCategories(reminders.map((e) =>
-      e.category?.isNotEmpty ?? false ?
-      '${e.category![0].toUpperCase()}${e.category!.substring(1).toLowerCase()}' :
-      null
-    ).whereType<String>());
-    setState(() {
-      isLoading=false;
+      _selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: Text("Warm Reminders"),
-          actions: [EditSchedulesButton()],
+    return SafeArea(child: Scaffold(
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Reminders',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.access_time),
+            label: 'Schedules',
+          )
+        ],
       ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: reminders.length,
-              itemBuilder: (context, index) {
-                final reminder = reminders[index];
-                return ReminderCard(resyncMainPage: refreshReminders, reminder: reminder);
-              },
-            ),
-      floatingActionButton: AddReminderButton(onAdd: refreshReminders),
-    );
+    ));
   }
 }
-
-
-

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:warmreminders/features/main_page/main_page_api.dart';
-import 'package:warmreminders/features/main_page/models/requests/post_reminder_request.dart';
+import 'package:warmreminders/features/reminders_page/reminders_page_api.dart';
 
 class DeleteReminderButton extends StatefulWidget {
   final VoidCallback onUpdate;
