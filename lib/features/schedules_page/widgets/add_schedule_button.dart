@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:warmreminders/features/schedules_page/models/requests/post_schedule_request.dart';
 import 'package:warmreminders/features/schedules_page/schedules_page_api.dart';
 import 'package:warmreminders/utils/storage_util.dart';
+import 'package:warmreminders/widgets/add_item_button/add_item_button.dart';
 
 class AddScheduleButton extends StatelessWidget {
   final VoidCallback onAdd;
@@ -59,15 +60,7 @@ class AddScheduleButton extends StatelessWidget {
         onAdd();
       }
     }
-
-    return ElevatedButton.icon(
-      onPressed: addSchedule,
-      icon: const Icon(Icons.access_time),
-      label: const Text("Add Schedule"),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Theme.of(context).primaryColor
-        //foregroundColor: Theme.of(context).,
-      ),
-    );
+    
+    return AddItemButton(onPressed: addSchedule);
   }
 }

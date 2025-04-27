@@ -3,139 +3,114 @@ import 'package:warmreminders/features/reminders_page/models/requests/post_remin
 import 'package:warmreminders/features/reminders_page/reminders_page_api.dart';
 import 'package:warmreminders/features/reminders_page/widgets/category_pill.dart';
 import 'package:warmreminders/features/reminders_page/widgets/importance_pill.dart';
+import 'package:warmreminders/styles/app_colors.dart';
+import 'package:warmreminders/styles/app_styles.dart';
 import 'package:warmreminders/utils/storage_util.dart';
+import 'package:warmreminders/widgets/add_item_button/add_item_button.dart';
 
 class AddReminderButton extends StatefulWidget {
-  final VoidCallback onAdd;
-
-  const AddReminderButton({super.key, required this.onAdd});
+  final VoidCallback onAdded;
+  const AddReminderButton({super.key, required this.onAdded});
 
   @override
   State<AddReminderButton> createState() => _AddReminderButtonState();
 }
 
 class _AddReminderButtonState extends State<AddReminderButton> {
+  final _controller = TextEditingController();
+  String selectedCategory = usersCategories.first;
+  int selectedImportance = 3;
 
-  void addReminder(PostReminderRequest request) async {
+  void handleAdd() async {
+    final text = _controller.text.trim();
+    if (text.isEmpty) return;
+    final request = PostReminderRequest(
+      reminderText: text,
+      category: selectedCategory,
+      importance: selectedImportance,
+    );
     await postReminder(request);
-    widget.onAdd();
+
+    widget.onAdded();
+
+    _controller.clear();
+    selectedCategory = usersCategories.first;
+    selectedImportance = 3;
+
+    Navigator.of(context).pop();
   }
 
-  void _showDialog() {
-    showDialog(
+  void _showBottomSheet() {
+    showModalBottomSheet(
       context: context,
-      builder: (context) => _AddReminderDialog(onAdd: addReminder),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary, // background color
-        borderRadius: BorderRadius.circular(12), // rounded rectangle
+      isScrollControlled: true,      // let it grow above the keyboard
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      child: IconButton(
-        icon: const Icon(Icons.add, color: Colors.white),
-        onPressed: _showDialog,
-      ),
-    );
-  }
-}
-
-class _AddReminderDialog extends StatelessWidget {
-  final Function(PostReminderRequest) onAdd;
-  final TextEditingController _reminderController = TextEditingController();
-
-  _AddReminderDialog({required this.onAdd});
-
-  @override
-  Widget build(BuildContext context) {
-    String selectedCategory = usersCategories.first;
-    int selectedImportance = 3;
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      elevation: 10,
-      child: IntrinsicHeight(child: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.8,
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Icon(Icons.favorite, color: Theme.of(context).colorScheme.primary, size: 40),
-              const Text(
-                'Add Warm Reminder',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              TextField(
-                controller: _reminderController,
-                decoration: InputDecoration(
-                  hintText: 'What would you like to be warmly reminded of?',
-                  border: const OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 2,
-                    ),
-                  ),
+      builder: (_) => Padding(
+        padding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          top: 12,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 12,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _controller,
+              decoration: InputDecoration(
+                hintText: 'What would you like to be reminded of?',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                minLines: 3,
-                maxLines: 10,
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary, width: 2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
-              SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  CategoryPill(
-                    onCategorySelected: (category) {
-                      selectedCategory = category;
-                    },
-                  ),
-                  ImportancePill(
-                      onLevelSelected: (newLevel) {
-                        selectedImportance = newLevel;
-                      }
-                  )
-                ],
+              minLines: 2,
+              maxLines: 5,
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              spacing: 8,
+              children: [
+                CategoryPill(
+                  onCategorySelected: (category) {
+                    selectedCategory = category;
+                  },
+                ),
+                ImportancePill(
+                    onLevelSelected: (newLevel) {
+                      selectedImportance = newLevel;
+                    }
+                )
+              ],
+            ),
+            const SizedBox(height: 16),
+
+            // add button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: handleAdd,
+                style: AppStyles.submitButtonStyle,
+                child: const Text('Add')
               ),
-              SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Cancel'),
-                  ),
-                  const SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      final text = _reminderController.text.trim();
-                      final category = selectedCategory;
-                      if (text.isNotEmpty) {
-                        onAdd(PostReminderRequest(
-                            reminderText: text,
-                            category: category.isNotEmpty ? category : 'Reminder',
-                            importance: selectedImportance
-                        ));
-                        Navigator.pop(context);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Colors.white,
-                    ),
-                    child: const Text('Add'),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    ));
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AddItemButton(onPressed: _showBottomSheet);
   }
 }
+
+

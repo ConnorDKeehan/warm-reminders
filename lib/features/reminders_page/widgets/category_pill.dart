@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:warmreminders/utils/storage_util.dart';
+import 'package:warmreminders/widgets/action_pill/action_pill.dart';
 
 class CategoryPill extends StatefulWidget {
   final ValueChanged<String> onCategorySelected;
-
   const CategoryPill({
-    super.key,
+    Key? key,
     required this.onCategorySelected,
-  });
+  }) : super(key: key);
 
   static const _addNewKey = '__ADD_NEW__';
 
@@ -18,99 +18,85 @@ class CategoryPill extends StatefulWidget {
 class _CategoryPillState extends State<CategoryPill> {
   String selectedCategory = usersCategories.first;
 
-  void handleSelectCategory(String selected){
-    usersCategories.add(selected);
-
-    setState(() {
-      selectedCategory = selected;
-    });
-
-    widget.onCategorySelected(selected);
+  void _handleSelectCategory(String category) {
+    if (!usersCategories.contains(category)) {
+      usersCategories.add(category);
+    }
+    setState(() => selectedCategory = category);
+    widget.onCategorySelected(category);
   }
 
-  @override
-  Widget build(BuildContext context) {
-
-    return GestureDetector(
-      onTap: () async {
-        final choice = await showDialog<String>(
-          context: context,
-          builder: (context) => SimpleDialog(
-            title: const Text('Select Category'),
-            children: [
-              ...usersCategories.map((category) {
-                return SimpleDialogOption(
-                  onPressed: () => Navigator.pop(context, category),
-                  child: Text(category),
-                );
-              }).toList(),
-              const Divider(),
-              SimpleDialogOption(
-                onPressed: () => Navigator.pop(context, CategoryPill._addNewKey),
-                child: Row(
-                  children: const [
-                    Icon(Icons.add, size: 20),
-                    SizedBox(width: 8),
-                    Text('Add new category'),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-
-        if (choice == null) return;
-        if (choice == CategoryPill._addNewKey) {
-          final newCat = await _promptNewCategory(context);
-          if (newCat != null && newCat.trim().isNotEmpty) {
-            final trimmed = newCat.trim();
-
-            handleSelectCategory(trimmed);
-          }
-        } else if (choice != selectedCategory) {
-          handleSelectCategory(choice);
-        }
-      },
-      child: Wrap(
-        spacing: 8,
+  Future<void> _showCategoryDialog() async {
+    final choice = await showDialog<String>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: const Text('Select Category'),
         children: [
-          Chip(
-            label: Text(
-              selectedCategory,
-              style: const TextStyle(color: Colors.white),
+          ...usersCategories.map((category) => SimpleDialogOption(
+            child: Text(category),
+            onPressed: () => Navigator.pop(ctx, category),
+          )),
+          const Divider(),
+          SimpleDialogOption(
+            onPressed: () =>
+                Navigator.pop(ctx, CategoryPill._addNewKey),
+            child: Row(
+              children: const [
+                Icon(Icons.add, size: 20),
+                SizedBox(width: 8),
+                Text('Add new category'),
+              ],
             ),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            deleteIcon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-            onDeleted: () {},
           ),
         ],
       ),
     );
+
+    if (choice == null) return;
+
+    if (choice == CategoryPill._addNewKey) {
+      final newCat = await _promptNewCategory(context);
+      if (newCat != null && newCat.trim().isNotEmpty) {
+        _handleSelectCategory(newCat.trim());
+      }
+    } else if (choice != selectedCategory) {
+      _handleSelectCategory(choice);
+    }
   }
 
   Future<String?> _promptNewCategory(BuildContext context) {
     final controller = TextEditingController();
     return showDialog<String>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (ctx) => AlertDialog(
         title: const Text('New category name'),
         content: TextField(
           controller: controller,
           decoration: const InputDecoration(hintText: 'e.g. “Groceries”'),
           autofocus: true,
-          onSubmitted: (v) => Navigator.pop(context, v),
+          onSubmitted: (v) => Navigator.pop(ctx, v),
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(ctx),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () => Navigator.pop(context, controller.text),
+            onPressed: () => Navigator.pop(ctx, controller.text),
             child: const Text('Add'),
           ),
         ],
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ActionPill(
+      icon: Icons.label_outline,
+      label: selectedCategory,
+      selected: true,
+      onTap: _showCategoryDialog,
     );
   }
 }

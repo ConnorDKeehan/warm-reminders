@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:warmreminders/features/reminders_page/models/requests/patch_reminder_request.dart';
 import 'package:warmreminders/features/reminders_page/reminders_page_api.dart';
+import 'package:warmreminders/styles/app_styles.dart';
 
 class EditReminderButton extends StatefulWidget {
   final VoidCallback onUpdate;
@@ -105,10 +106,7 @@ class _EditGratitudeDialog extends StatelessWidget {
                         Navigator.pop(context);
                       }
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      foregroundColor: Colors.white,
-                    ),
+                    style: AppStyles.submitButtonStyle,
                     child: const Text('Save'),
                   ),
                 ],

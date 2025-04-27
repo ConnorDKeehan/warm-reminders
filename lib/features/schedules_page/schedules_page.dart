@@ -35,9 +35,6 @@ class _SchedulesPageState extends State<SchedulesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Edit Schedules")
-      ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : ListView.builder(

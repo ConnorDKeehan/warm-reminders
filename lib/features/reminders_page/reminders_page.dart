@@ -51,7 +51,7 @@ class _MainPageState extends State<RemindersPage> {
                 return ReminderCard(resyncMainPage: refreshReminders, reminder: reminder);
               },
             ),
-      floatingActionButton: AddReminderButton(onAdd: refreshReminders),
+      floatingActionButton: AddReminderButton(onAdded: refreshReminders),
     );
   }
 }
