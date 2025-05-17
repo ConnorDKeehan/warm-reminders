@@ -21,7 +21,7 @@ public static class DependencyInjection
          var connectionString = configuration.GetConnectionString("WarmReminders");
          services.AddDbContext<WarmRemindersContext>(options =>
                      options.UseSqlServer(connectionString));
-        //https://warmreminders.blob.core.windows.net/warmremindersecrets/firebase.json
+
         var firebaseJsonUrl = configuration["FirebaseJsonUrl"];
 
         var firebaseJson = GetFireBaseJsonFromBlob(configuration["FirebaseJsonUrl"]);
