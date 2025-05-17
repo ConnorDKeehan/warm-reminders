@@ -1,0 +1,17 @@
+name: Keep Azure App Alive
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # Every 15 minutes
+  workflow_dispatch:  # Allows manual triggering as well
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Curl KeepAlive Endpoint
+        run: |
+          curl -X 'GET' \
+            'https://warm-reminders-dmf8cahmccc8cug8.australiaeast-01.azurewebsites.net/KeepAlive' \
+            -H 'accept: */*'
