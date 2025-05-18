@@ -34,7 +34,7 @@ void setUsersCategories(Iterable<String> categories){
 }
 
 Set<String> usersCategories = {"Reminder"};
-const configApiBaseUrl = 'https://connormdk.xyz';
+const configApiBaseUrl = 'https://warm-reminders-dmf8cahmccc8cug8.australiaeast-01.azurewebsites.net';
 const configApiSuccessResponses = [200, 201, 204];
 
 

@@ -1,1 +1,1 @@
-flutter build web --release --base-href '/warm-reminders/' --output-dir=docs
+flutter build web --release --base-href '/warm-reminders/'

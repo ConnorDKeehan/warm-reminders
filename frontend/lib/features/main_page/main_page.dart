@@ -12,12 +12,12 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
+  bool enableRemembersPage = false;
 
   static const List<Widget> _pages = <Widget>[
-    RemembersPage(),
     RemindersPage(),
-    SchedulesPage()
-
+    SchedulesPage(),
+    RemembersPage()
   ];
 
   void _onItemTapped(int index) {
@@ -34,11 +34,7 @@ class _MainPageState extends State<MainPage> {
         currentIndex: _selectedIndex,
         backgroundColor: Color(0xFF0a0a0a),
         onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.today_outlined),
-            label: 'Remembers',
-          ),
+        items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             label: 'Reminders',
@@ -47,6 +43,11 @@ class _MainPageState extends State<MainPage> {
             icon: Icon(Icons.access_time),
             label: 'Schedules',
           ),
+          if(enableRemembersPage)
+            BottomNavigationBarItem(
+              icon: Icon(Icons.today_outlined),
+              label: 'Remembers',
+            ),
         ],
       ),
     ));
